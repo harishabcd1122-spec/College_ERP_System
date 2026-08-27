@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Marks Management</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg">
+
+<div class="container-fluid">
+
+<a class="navbar-brand">
+
+<i class="bi bi-mortarboard-fill"></i>
+
+College ERP
+
+</a>
+
+<div class="ms-auto">
+
+<a href="dashboard.html" class="btn btn-primary me-2">
+
+<i class="bi bi-house-fill"></i>
+
+Dashboard
+
+</a>
+
+<button class="btn btn-danger" onclick="logout()">
+
+<i class="bi bi-box-arrow-right"></i>
+
+Logout
+
+</button>
+
+</div>
+
+</div>
+
+</nav>
+
+<div class="container mt-5">
+
+<h2 class="mb-4">
+
+<i class="bi bi-journal-bookmark-fill"></i>
+
+Marks Management
+
+</h2>
+
+<div class="row g-4">
+
+<div class="col-md-3">
+
+<div class="card dashboard-card">
+
+<div class="card-body text-center">
+
+<i class="bi bi-journal-check display-5"></i>
+
+<h2 id="marksCount">0</h2>
+
+<p>Total Records</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card dashboard-card">
+
+<div class="card-body text-center">
+
+<i class="bi bi-trophy-fill display-5"></i>
+
+<h2 id="highestMarks">0</h2>
+
+<p>Highest Marks</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card dashboard-card">
+
+<div class="card-body text-center">
+
+<i class="bi bi-graph-up-arrow display-5"></i>
+
+<h2 id="averageMarks">0</h2>
+
+<p>Average</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card dashboard-card">
+
+<div class="card-body text-center">
+
+<i class="bi bi-award-fill display-5"></i>
+
+<h2 id="topScorer">--</h2>
+
+<p>Top Scorer</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card mt-5">
+
+<div class="card-body">
+
+<div class="row">
+
+<div class="col-md-4">
+
+<input
+type="text"
+id="search"
+class="form-control"
+placeholder="🔍 Search Student..."
+onkeyup="searchMarks()">
+
+</div>
+
+<div class="col-md-8 text-end">
+
+<button class="btn btn-success crud-btn" onclick="openAddModal()">
+
+<i class="bi bi-plus-circle-fill"></i>
+
+Add Marks
+
+</button>
+
+<a href="/marks/pdf" class="btn btn-danger">
+
+<i class="bi bi-file-earmark-pdf-fill"></i>
+
+PDF
+
+</a>
+
+</div>
+
+</div>
+
+<hr>
+
+<div class="table-responsive">
+
+<table class="table table-dark table-hover">
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Student Name</th>
+
+<th>Course Name</th>
+
+<th>Total Marks</th>
+
+<th>Grade</th>
+
+<th>Actions</th>
+
+</tr>
+
+</thead>
+
+<tbody id="marksTable">
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+<!-- Add Marks Modal -->
+
+<div class="modal fade" id="marksModal" tabindex="-1">
+
+<div class="modal-dialog">
+
+<div class="modal-content bg-dark text-white">
+
+<div class="modal-header">
+
+<h5 class="modal-title">
+
+Add Marks
+
+</h5>
+
+<button
+type="button"
+class="btn-close btn-close-white"
+data-bs-dismiss="modal">
+
+</button>
+
+</div>
+
+<div class="modal-body">
+<input type="hidden" id="marksId">
+
+<input
+type="text"
+id="studentName"
+class="form-control mb-3"
+placeholder="Student Name">
+
+<input
+type="text"
+id="courseName"
+class="form-control mb-3"
+placeholder="Course Name">
+
+<input
+type="number"
+id="internalMarks"
+class="form-control mb-3"
+placeholder="Internal Marks">
+
+<input
+type="number"
+id="externalMarks"
+class="form-control mb-3"
+placeholder="External Marks">
+</div>
+
+<div class="modal-footer">
+<button
+id="saveBtn"
+class="btn btn-success crud-btn"
+onclick="saveMarks()">
+
+Save Marks
+</button>
+</div> 
+</div> 
+</div> 
+</div> 
+
+<footer class="mt-5">
+
+<div class="container text-center">
+
+<h5>
+
+<i class="bi bi-mortarboard-fill"></i>
+
+College ERP System
+
+</h5>
+
+<p>
+
+Marks Management Module
+
+</p>
+
+<p>
+
+© 2026 All Rights Reserved
+
+</p>
+
+</div>
+
+</footer>
+
+<script>
+
+const api="http://localhost:8081/marks";
+
+let modal;
+
+window.onload=function(){
+
+modal=new bootstrap.Modal(document.getElementById("marksModal"));
+
+loadMarks();
+
+hideStudentCrud();
+
+}
+
+function grade(mark){
+
+if(mark>=90) return "O";
+
+if(mark>=80) return "A+";
+
+if(mark>=70) return "A";
+
+if(mark>=60) return "B+";
+
+if(mark>=50) return "B";
+
+return "F";
+
+}
+
+function loadMarks() {
+
+    fetch(api)
+
+    .then(response => response.json())
+
+    .then(data => {
+
+        let rows = "";
+
+        let highest = 0;
+
+        let total = 0;
+
+        let topper = "";
+
+        data.forEach(record => {
+
+            if (record.totalMarks > highest) {
+
+                highest = record.totalMarks;
+
+                topper = record.studentName;
+            }
+
+            total += record.totalMarks;
+
+            rows += `
+            <tr>
+                <td>${record.id}</td>
+                <td>${record.studentName}</td>
+                <td>${record.courseName}</td>
+                <td>${record.totalMarks}</td>
+                <td>
+                    <span class="badge bg-success">
+                        ${record.grade}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-warning btn-sm crud-btn"
+                            onclick="editMarks(${record.id})">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm crud-btn"
+                            onclick="deleteMarks(${record.id})">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
+                </td>
+            </tr>`;
+        });
+
+        document.getElementById("marksTable").innerHTML = rows;
+        document.getElementById("marksCount").innerHTML = data.length;
+        document.getElementById("highestMarks").innerHTML = highest;
+        document.getElementById("averageMarks").innerHTML =
+            data.length ? Math.round(total / data.length) : 0;
+        document.getElementById("topScorer").innerHTML = topper || "--";
+
+    });
+
+}
+
+function openAddModal(){
+
+    if(getRole()==="student"){
+
+        alert("Students can only view marks.");
+
+        return;
+
+    }
+
+    document.getElementById("marksId").value = "";
+    document.getElementById("studentName").value = "";
+    document.getElementById("courseName").value = "";
+    document.getElementById("internalMarks").value = "";
+    document.getElementById("externalMarks").value = "";
+
+    document.querySelector(".modal-title").innerHTML = "Add Marks";
+    document.getElementById("saveBtn").innerHTML = "Save Marks";
+
+    modal.show();
+
+}
+function editMarks(id){
+    if(getRole()==="student"){
+
+    alert("Students can only view marks.");
+
+    return;
+
+}
+
+    fetch(api + "/" + id)
+
+    .then(response => response.json())
+
+    .then(record => {
+
+        document.getElementById("marksId").value = record.id;
+
+        document.getElementById("studentName").value = record.studentName;
+
+        document.getElementById("courseName").value = record.courseName;
+
+        document.getElementById("internalMarks").value = record.internalMarks;
+
+        document.getElementById("externalMarks").value = record.externalMarks;
+
+        document.querySelector(".modal-title").innerHTML = "Edit Marks";
+
+        document.getElementById("saveBtn").innerHTML = "Update Marks";
+
+        modal.show();
+
+    });
+
+}
+
+function saveMarks(){
+    if(getRole()==="student"){
+
+    alert("Students cannot modify marks.");
+
+    return;
+
+}
+
+    const id = document.getElementById("marksId").value;
+
+    const mark = {
+
+        studentName: document.getElementById("studentName").value,
+
+        courseName: document.getElementById("courseName").value,
+
+        internalMarks: parseInt(document.getElementById("internalMarks").value),
+
+        externalMarks: parseInt(document.getElementById("externalMarks").value)
+
+    };
+
+    const url = id === "" ? api : api + "/" + id;
+
+    const method = id === "" ? "POST" : "PUT";
+
+    console.log("ID:", id);
+    console.log("Method:", method);
+    console.log("URL:", url);
+    console.log(mark);
+
+   fetch(url, {
+    method: method,
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(mark)
+})
+.then(response => {
+    console.log("Status:", response.status);
+    return response.json();
+})
+.then(data => {
+    console.log("Response:", data);
+    modal.hide();
+    loadMarks();
+})
+.catch(error => console.log(error));
+}
+function deleteMarks(id){
+
+    if(getRole()==="student"){
+
+        alert("Students cannot delete marks.");
+
+        return;
+
+    }
+
+    if(confirm("Delete this marks record?")){
+
+        fetch(api+"/"+id,{
+            method:"DELETE"
+        })
+
+        .then(()=>loadMarks());
+
+    }
+
+}
+function searchMarks(){
+
+let input=document.getElementById("search").value.toUpperCase();
+
+let tr=document.getElementById("marksTable").getElementsByTagName("tr");
+
+for(let i=0;i<tr.length;i++){
+
+let td=tr[i].getElementsByTagName("td")[1];
+
+if(td){
+
+let value=td.textContent||td.innerText;
+
+tr[i].style.display=value.toUpperCase().indexOf(input)>-1?"":"none";
+
+}
+
+}
+
+}
+
+function logout(){
+
+if(confirm("Logout?")){
+
+window.location.href="login.html";
+
+}
+
+}
+
+</script>
+<script src="js/auth.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
