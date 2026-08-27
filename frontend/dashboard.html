@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Task Management System</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ambient Glowing Background Elements -->
+  <div class="ambient-glow-top"></div>
+  <div class="ambient-glow-left"></div>
+  <div class="ambient-glow-right"></div>
+  <div class="bg-grid-overlay"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar-wrapper">
+    <nav class="navbar">
+      <a href="dashboard.html" class="nav-brand">
+        <div class="nav-logo-icon">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <span class="nav-brand-text">
+          <span class="brand-light">Task</span><span class="brand-gradient">Manager</span>
+        </span>
+      </a>
+      <div class="nav-actions">
+        <div class="user-badge" id="userBadge">
+          <i class="fa-regular fa-circle-user" style="color: var(--pink-glow);"></i>
+          <span id="userName">User</span>
+        </div>
+        <button id="logoutBtn" class="btn btn-secondary btn-sm">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Dashboard Content -->
+  <main class="dashboard-container">
+    
+    <!-- Dashboard Notification Alert Box -->
+    <div id="dashboardAlert" class="alert-box" style="display: none;"></div>
+
+    <!-- Welcome Header Section -->
+    <section class="welcome-section">
+      <div>
+        <h1 class="welcome-title">Task Dashboard</h1>
+        <p class="welcome-subtitle">Manage, track and organize your daily projects</p>
+      </div>
+      <button id="openAddTaskModalBtn" class="btn btn-primary">
+        <i class="fa-solid fa-plus"></i> Add New Task
+      </button>
+    </section>
+
+    <!-- Task Statistics Cards Grid -->
+    <section class="stats-grid">
+      <!-- Total Tasks Card -->
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Total Tasks</div>
+          <div class="stat-value" id="totalTasksCount">0</div>
+        </div>
+        <div class="stat-icon total">
+          <i class="fa-solid fa-layer-group"></i>
+        </div>
+      </div>
+
+      <!-- To Do Card -->
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">To Do</div>
+          <div class="stat-value" id="todoTasksCount">0</div>
+        </div>
+        <div class="stat-icon todo">
+          <i class="fa-solid fa-hourglass-half"></i>
+        </div>
+      </div>
+
+      <!-- In Progress Card -->
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">In Progress</div>
+          <div class="stat-value" id="progressTasksCount">0</div>
+        </div>
+        <div class="stat-icon progress">
+          <i class="fa-solid fa-bolt-lightning"></i>
+        </div>
+      </div>
+
+      <!-- Completed Card -->
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Completed</div>
+          <div class="stat-value" id="completedTasksCount">0</div>
+        </div>
+        <div class="stat-icon completed">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Controls Toolbar -->
+    <section class="dashboard-toolbar">
+      <div class="filter-group">
+        <!-- Search Input -->
+        <div class="search-wrapper">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="form-control search-input" 
+            placeholder="Search tasks by title or description..."
+          >
+        </div>
+
+        <!-- Status Filter Dropdown -->
+        <select id="statusFilter" class="form-select filter-select">
+          <option value="ALL">All Statuses</option>
+          <option value="TODO">To Do</option>
+          <option value="IN_PROGRESS">In Progress</option>
+          <option value="COMPLETED">Completed</option>
+        </select>
+
+        <!-- Priority Filter Dropdown -->
+        <select id="priorityFilter" class="form-select filter-select">
+          <option value="ALL">All Priorities</option>
+          <option value="LOW">Low</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="HIGH">High</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Task Cards Grid Area -->
+    <section class="task-grid" id="taskContainer">
+      <!-- Placeholder / Empty State (Replaced dynamically by JS) -->
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <i class="fa-regular fa-folder-open"></i>
+        </div>
+        <h3 class="empty-state-title">No tasks found</h3>
+        <p class="empty-state-text">Get started by creating your first task using the "Add New Task" button above.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add / Edit Task Modal Dialog -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Add New Task</h3>
+        <button type="button" class="modal-close" id="closeModalBtn">&times;</button>
+      </div>
+
+      <form id="taskForm">
+        <div class="modal-body">
+          <div id="modalAlert" class="alert-box" style="display: none;"></div>
+          <input type="hidden" id="taskId">
+
+          <div class="form-group">
+            <label for="taskTitle" class="form-label">Task Title *</label>
+            <input 
+              type="text" 
+              id="taskTitle" 
+              class="form-control" 
+              placeholder="e.g. Complete Spring Boot REST API" 
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="taskDescription" class="form-label">Description</label>
+            <textarea 
+              id="taskDescription" 
+              class="form-control" 
+              placeholder="Provide additional details or notes about this task..."
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="taskPriority" class="form-label">Priority</label>
+            <select id="taskPriority" class="form-select">
+              <option value="LOW">Low</option>
+              <option value="MEDIUM" selected>Medium</option>
+              <option value="HIGH">High</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="taskStatus" class="form-label">Status</label>
+            <select id="taskStatus" class="form-select">
+              <option value="TODO" selected>To Do</option>
+              <option value="IN_PROGRESS">In Progress</option>
+              <option value="COMPLETED">Completed</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="taskDueDate" class="form-label">Due Date</label>
+            <input type="date" id="taskDueDate" class="form-control">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" id="saveTaskBtn" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Create Task
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Task Management System. All rights reserved.</p>
+  </footer>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

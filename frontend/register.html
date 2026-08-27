@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Task Management System</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Ambient Glowing Background Elements -->
+  <div class="ambient-glow-top"></div>
+  <div class="ambient-glow-left"></div>
+  <div class="ambient-glow-right"></div>
+  <div class="bg-grid-overlay"></div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar-wrapper">
+    <nav class="navbar">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-logo-icon">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <span class="nav-brand-text">
+          <span class="brand-light">Task</span><span class="brand-gradient">Manager</span>
+        </span>
+      </a>
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-secondary btn-sm">Sign In</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Register Form Wrapper -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <h1 class="auth-title">Create Account</h1>
+        <p class="auth-subtitle">Get started with your personal task board</p>
+      </div>
+
+      <!-- Alert Notification Message Box -->
+      <div id="alertBox" class="alert-box" style="display: none;"></div>
+
+      <form id="registerForm">
+        <!-- Name Field -->
+        <div class="form-group">
+          <label for="name" class="form-label">Full Name</label>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            class="form-control" 
+            placeholder="John Doe" 
+            required
+            autocomplete="name"
+          >
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            class="form-control" 
+            placeholder="name@example.com" 
+            required
+            autocomplete="email"
+          >
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password" class="form-label">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            class="form-control" 
+            placeholder="Create a strong password" 
+            required
+            autocomplete="new-password"
+          >
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-group">
+          <label for="confirmPassword" class="form-label">Confirm Password</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            name="confirmPassword" 
+            class="form-control" 
+            placeholder="Re-enter your password" 
+            required
+            autocomplete="new-password"
+          >
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="registerBtn" class="btn btn-primary btn-block" style="margin-top: 1.25rem;">
+          Register Now <i class="fa-solid fa-user-plus"></i>
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account? <a href="login.html">Sign in here</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2026 Task Management System. All rights reserved.</p>
+  </footer>
+
+  <script src="js/register.js"></script>
+</body>
+</html>
